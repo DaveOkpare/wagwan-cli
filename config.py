@@ -13,25 +13,26 @@ KEY = "OPEN_AI_KEY"
 
 
 class OpenAI:
-    def __init__(self, file_path=None, starts_at=None, ends_at=None):
+    def __init__(
+        self, file_path: str = None, starts_at: int = None, ends_at: int = None
+    ):
         self.file_path = file_path
         self.starts_at = starts_at
         self.ends_at = ends_at
 
-    @staticmethod
-    def read_file(path: str, start_line: int = None, end_line: int = None):
-        with open(path, "r") as f:
+    def read_file(self):
+        with open(self.file_path, "r") as f:
             data = f.readlines()
 
-            if start_line is None:
-                start_at = 0
-            if end_line is None:
-                end_at = len(data)
+            if self.starts_at is None:
+                start_line = 0
+            if self.ends_at is None:
+                end_line = len(data)
             else:
-                start_at = start_line - 1
-                end_at = end_line
+                start_line = self.starts_at - 1
+                end_line = self.ends_at
 
-            line_number = range(start_at, end_at)
+            line_number = range(start_line, end_line)
             lines = []
 
             for i, line in enumerate(data):
@@ -42,15 +43,15 @@ class OpenAI:
         output = "".join(lines)
         return output
 
-    def generate_prompt(self, file_path, start_at, end_at):
-        file_input = self.read_file(file_path, start_at, end_at)
+    def generate_prompt(self):
+        file_input = self.read_file()
         prompt = "# Python 3 \n"
         prompt += file_input
         prompt += "\n\n# Explanation of what the code does\n\n#"
         return prompt
 
-    def explain_prompt(self, file_path, start_at, end_at):
-        file_input = self.read_file(file_path, start_at, end_at)
+    def explain_prompt(self):
+        file_input = self.read_file()
         prompt = file_input
         prompt += '\n\n"""\nHere\'s what the above code is doing:\n1. '
         return prompt
@@ -58,7 +59,7 @@ class OpenAI:
     def get_response(self):
         response = openai.Completion.create(
             model="code-davinci-002",
-            prompt=self.generate_prompt(self.file_path, self.starts_at, self.ends_at),
+            prompt=self.generate_prompt(),
             temperature=0,
             max_tokens=1000,
             top_p=1.0,
@@ -76,7 +77,6 @@ def get_key():
     if key is None:
         get_key()
     else:
-        # openai.api_key = key
         with open(ENV_PATH, "w+") as f:
             f.write(f"OPENAI_API_KEY={key}")
     return key
@@ -98,7 +98,7 @@ def get_response(file_path, start_at, end_at):
     initialize_openai()
     response = openai.Completion.create(
         model="code-davinci-002",
-        prompt=OpenAI().generate_prompt(file_path, start_at, end_at),
+        prompt=OpenAI(file_path, start_at, end_at).generate_prompt(),
         temperature=0,
         max_tokens=1000,
         top_p=1.0,
@@ -115,7 +115,7 @@ def explanation_response(file_path, start_at, end_at):
     initialize_openai()
     response = openai.Completion.create(
         model="code-davinci-002",
-        prompt=OpenAI().explain_prompt(file_path, start_at, end_at),
+        prompt=OpenAI(file_path, start_at, end_at).generate_prompt(),
         temperature=0,
         max_tokens=100,
         top_p=1,
