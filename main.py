@@ -1,15 +1,15 @@
 import typer
 
-from config import get_response, explanation_response
+from config import explanation_response
 
 app = typer.Typer()
 
 
 @app.command("explain", help="Explains a Python script")
 def explain_script(
-    path: str, starts_at: int = typer.Option(None), ends_at: int = typer.Option(None)
+    path: str, start_at: int = typer.Option(None), end_at: int = typer.Option(None)
 ):
-    response = explanation_response(path, starts_at, ends_at)
+    response = explanation_response(path, start_at, end_at)
     print(response)
 
 
