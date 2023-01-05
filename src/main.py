@@ -1,21 +1,21 @@
 import typer
 
-from config import explanation_response
+from config import OpenAI
 
 app = typer.Typer()
 
 
-@app.command("explain", help="Explains a Python script")
+@app.command("explain", help="Explains a Python script.")
 def explain_script(
     path: str, start_at: int = typer.Option(None), end_at: int = typer.Option(None)
 ):
-    response = explanation_response(path, start_at, end_at)
+    response = OpenAI(path, start_at, end_at).explain()
     print(response)
 
 
-@app.command("convert", help="Explains a bug")
-def explain_bug(item: str):
-    print(f"Creating item: {item}")
+@app.command("convert", help="Converts script from one language to another.")
+def convert_script():
+    print(f"Command will be available in next release.")
 
 
 if __name__ == "__main__":
