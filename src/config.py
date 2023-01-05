@@ -78,7 +78,7 @@ class OpenAI:
         prompt += '\n\n"""\nHere\'s what the above code is doing:\n1. '
         return prompt
 
-    def get_response(self):
+    def explain(self):
         self.initialize_openai()
         response = openai.Completion.create(
             model="code-davinci-002",
