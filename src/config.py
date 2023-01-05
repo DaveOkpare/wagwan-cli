@@ -12,6 +12,20 @@ ENV_PATH = os.path.join(BASE_DIR, ".env")
 KEY = "OPEN_AI_KEY"
 
 
+def path_exists():
+    return os.path.isfile(ENV_PATH)
+
+
+def get_key():
+    key = typer.prompt("Enter your OpenAI API Key")
+    if key is None:
+        get_key()
+    else:
+        with open(ENV_PATH, "w+") as f:
+            f.write(f"OPENAI_API_KEY={key}")
+    return key
+
+
 class OpenAI:
     def __init__(
         self, file_path: str = None, starts_at: int = None, ends_at: int = None
@@ -19,6 +33,14 @@ class OpenAI:
         self.file_path = file_path
         self.starts_at = starts_at
         self.ends_at = ends_at
+
+    @staticmethod
+    def initialize_openai():
+        if not path_exists():
+            key = get_key()
+            openai.api_key = key
+        else:
+            openai.api_key = os.getenv("OPENAI_API_KEY")
 
     def read_file(self):
         with open(self.file_path, "r") as f:
@@ -57,6 +79,7 @@ class OpenAI:
         return prompt
 
     def get_response(self):
+        self.initialize_openai()
         response = openai.Completion.create(
             model="code-davinci-002",
             prompt=self.generate_prompt(),
@@ -70,58 +93,3 @@ class OpenAI:
         output = response["choices"][0]["text"]
         clean_output = re.sub(r"#", "", output)
         return clean_output
-
-
-def get_key():
-    key = typer.prompt("Enter your OpenAI API Key")
-    if key is None:
-        get_key()
-    else:
-        with open(ENV_PATH, "w+") as f:
-            f.write(f"OPENAI_API_KEY={key}")
-    return key
-
-
-def path_exists():
-    return os.path.isfile(ENV_PATH)
-
-
-def initialize_openai():
-    if not path_exists():
-        key = get_key()
-        openai.api_key = key
-    else:
-        openai.api_key = os.getenv("OPENAI_API_KEY")
-
-
-def get_response(file_path, start_at, end_at):
-    initialize_openai()
-    response = openai.Completion.create(
-        model="code-davinci-002",
-        prompt=OpenAI(file_path, start_at, end_at).generate_prompt(),
-        temperature=0,
-        max_tokens=1000,
-        top_p=1.0,
-        frequency_penalty=0.0,
-        presence_penalty=0.0,
-        stop=["\n\n#"],
-    )
-    output = response["choices"][0]["text"]
-    clean_output = re.sub(r"#", "", output)
-    return clean_output
-
-
-def explanation_response(file_path, start_at, end_at):
-    initialize_openai()
-    response = openai.Completion.create(
-        model="code-davinci-002",
-        prompt=OpenAI(file_path, start_at, end_at).generate_prompt(),
-        temperature=0,
-        max_tokens=100,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0,
-        stop=['"""'],
-    )
-    output = response["choices"][0]["text"]
-    return output
