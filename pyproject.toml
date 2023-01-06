@@ -4,6 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wagwan_cli"
+dynamic = ["dependencies"]
 version = "0.0.1"
 authors = [
   { name="David Okpare", email="okparedave@gmail.com" },
@@ -16,6 +17,9 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
 
 [project.urls]
 "Homepage" = "https://github.com/DaveOkpare/wagwan-cli"
