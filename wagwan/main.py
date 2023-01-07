@@ -1,6 +1,6 @@
 import typer
 
-from .config import OpenAI
+from .utils import OpenAI
 
 app = typer.Typer()
 
