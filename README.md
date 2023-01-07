@@ -15,7 +15,7 @@ pip install "git+https://github.com/DaveOkpare/wagwan-cli"
 
 `wagwan` uses [OpenAI's Codex API.](https://openai.com/blog/openai-codex/) To use it, you'll first need to request access from [OpenAI](http://beta.openai.com/codex-waitlist). Once granted access, obtain an API key from your dashboard, and run the following command.
 
-```shell
+```commandline
 wagwan login
 ```
 
