@@ -1,9 +1,9 @@
-## Wagwan CLI
+# Wagwan CLI
 
 A CLI tool that explains code snippets, converts them to other languages, and fixes bugs, built in Python using [OpenAI's Codex.](https://openai.com/blog/openai-codex/)
 
 
-### Installation
+## Installation
 
 You can install `wagwan` by running the following command in your terminal.
 
@@ -11,11 +11,11 @@ You can install `wagwan` by running the following command in your terminal.
 pip install "git+https://github.com/DaveOkpare/wagwan-cli"
 ```
 
-### Usage 
+## Usage 
 
 `wagwan` uses [OpenAI's Codex API.](https://openai.com/blog/openai-codex/) To use it, you'll first need to request access from [OpenAI](http://beta.openai.com/codex-waitlist). Once granted access, obtain an API key from your dashboard, and run the following command.
 
-```commandline
+```shell
 wagwan login
 ```
 
@@ -40,6 +40,6 @@ wagwan --help
 
 ```
 
-### License
+## License
 
 This project is open-sourced under the MIT license. See the [License](LICENSE) file for more information.
