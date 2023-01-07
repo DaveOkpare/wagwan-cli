@@ -1,15 +1,14 @@
+import configparser
 import os
 import re
 
 import openai
 import typer
-from dotenv import load_dotenv
-
-load_dotenv()
 
 BASE_DIR = os.getcwd()
-ENV_PATH = os.path.join(BASE_DIR, ".env")
-KEY = "OPEN_AI_KEY"
+ENV_PATH = os.path.join(BASE_DIR, "config")
+config = configparser.ConfigParser()
+config.read(ENV_PATH)
 
 
 def path_exists():
@@ -22,7 +21,8 @@ def get_key():
         get_key()
     else:
         with open(ENV_PATH, "w+") as f:
-            f.write(f"OPENAI_API_KEY={key}")
+            f.write("[openai]\n")
+            f.write(f"API_KEY={key}")
     return key
 
 
@@ -40,7 +40,7 @@ class OpenAI:
             key = get_key()
             openai.api_key = key
         else:
-            openai.api_key = os.getenv("OPENAI_API_KEY")
+            openai.api_key = config.get("openai", "API_KEY")
 
     def read_file(self):
         with open(self.file_path, "r") as f:
