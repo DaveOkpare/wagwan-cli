@@ -65,24 +65,25 @@ class OpenAI:
         output = "".join(lines)
         return output
 
-    def generate_prompt(self):
-        file_input = self.read_file()
-        prompt = "# Python 3 \n"
-        prompt += file_input
-        prompt += "\n\n# Explanation of what the code does\n\n#"
-        return prompt
-
     def explain_prompt(self):
         file_input = self.read_file()
-        prompt = file_input
-        prompt += '\n\n"""\nHere\'s what the above code is doing:\n1. '
+        prompt = (
+            f"# Python 3 \n{file_input}\n\n# Explanation of what the code does\n\n#"
+        )
+        return prompt
+
+    def convert_prompt(self, initial, output):
+        initial = initial.lower()
+        output = output.lower()
+        file_input = self.read_file()
+        prompt = f"##### Translate this function  from {initial} into {output}\n### {initial}\n    \n    {file_input}\n    \n### {output} "
         return prompt
 
     def explain(self):
         self.initialize_openai()
         response = openai.Completion.create(
             model="code-davinci-002",
-            prompt=self.generate_prompt(),
+            prompt=self.explain_prompt(),
             temperature=0,
             max_tokens=1000,
             top_p=1.0,
@@ -91,5 +92,20 @@ class OpenAI:
             stop=["\n\n#"],
         )
         output = response["choices"][0]["text"]
-        clean_output = re.sub(r"#", "", output)
-        return clean_output
+        response_text = re.sub(r"#", "", output)
+        return response_text
+
+    def convert(self, initial, final):
+        self.initialize_openai()
+        response = openai.Completion.create(
+            model="code-davinci-002",
+            prompt=self.convert_prompt(initial, final),
+            temperature=0,
+            max_tokens=1000,
+            top_p=1.0,
+            frequency_penalty=0.0,
+            presence_penalty=0.0,
+            stop=["###"],
+        )
+        response_text = response["choices"][0]["text"]
+        return response_text.strip()
