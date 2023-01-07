@@ -1,3 +1,3 @@
-from main import app
+from . import app
 
 app(prog_name="wagwan")
