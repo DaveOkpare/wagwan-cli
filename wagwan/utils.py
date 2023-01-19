@@ -6,7 +6,7 @@ import openai
 import typer
 
 BASE_DIR = os.getcwd()
-ENV_PATH = os.path.join(BASE_DIR, "config")
+ENV_PATH = os.path.join(BASE_DIR, ".wagwan")
 config = configparser.ConfigParser()
 config.read(ENV_PATH)
 
